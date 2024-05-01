@@ -1,62 +1,61 @@
-import React from 'react';
-import {Button, Select, TextField} from "@mui/material";
+import React, {useEffect} from 'react';
+import {Box, Button, Grid, SelectChangeEvent} from "@mui/material";
 import { useState } from "react";
+import {BrowserWallet} from "@meshsdk/core";
+import TransactionHelper from "../utils/TransactionHelper.tsx";
+import MintNFTUserInput from "../components/MintNFTUserInput.tsx";
 
-const CreateNFT = () => {
+const CreateNFT = (props : ({wallet : BrowserWallet})) => {
 
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const [transaction, setTransaction] = useState("");
-    const [mintNFT, setMintNFT] = useState<MintNFT>({} as MintNFT);
+    const [signedTransaction, setSignedTransaction] = useState("");
+    const [mintDTO, setMintDTO] = useState<MintDTO>({} as MintDTO);
+    const [addresses, setAddresses] = useState<string[]>([]);
+    const [txHash, setTxHash] = useState("");
+
+    useEffect(() => {
+        if (props.wallet.getUsedAddresses != undefined) {
+            props.wallet.getUsedAddresses().then((response) => {
+                setAddresses(response);
+                console.log(response);
+            });
+
+        }
+    }, [props.wallet]);
 
 
-    // useEffect(() => {
-    // componentDidMount();
-    // }, []);
-
-
-    function buildTransaction() {
-        setTransaction(TransactionHelper.buildTransaction(mintNFT));
-    }
-
-    // function submitTransaction() {
-    //     backendService.submit(transaction).then((response) => {
-    //         setTxHash(response.data);
-    //     });
-    // }
-
-    function signTransaction() {
-        // signMessage("" + transaction).then((response) => {
-        //     console.log(response);
-        //
-        // });
-    }
-
-    function handleChange (e: React.ChangeEvent<HTMLInputElement>, key: string) : void {
+    function handleChange (e: React.ChangeEvent<HTMLInputElement> | SelectChangeEvent<string>, key: string) : void {
         // { [key] : e.target.value}
-        setMintNFT(prevState => ({
+        setMintDTO(prevState => ({
             ...prevState,
             [key]: e.target.value
         })
         );
     }
 
+    function signAndSubmit() {
+        TransactionHelper.buildTransaction(mintDTO, props.wallet).then((response) => {
+            setTransaction(response);
+        });
+        TransactionHelper.signTransaction(transaction, props.wallet).then((response) => {
+            setSignedTransaction(response);
+        });
+        TransactionHelper.submitTransaction(signedTransaction, props.wallet).then((response) => {
+            setTxHash(response);
+        });
+    }
+
     return (
-        <div>
-            <TextField label="Name" onChange={(e : React.ChangeEvent<HTMLInputElement>) => handleChange(e, "name")}/>
-            <TextField label="Description" onChange={(e : React.ChangeEvent<HTMLInputElement>) => handleChange(e, "description")}/>
-            <TextField label="IPFS Image URL" onChange={(e : React.ChangeEvent<HTMLInputElement>) => handleChange(e, "ipfsImageUrl")}/>
-            <TextField label="IPFS Image Name" onChange={(e : React.ChangeEvent<HTMLInputElement>) => handleChange(e, "ipfsImageName")}/>
-            <TextField label="Policy Name" onChange={(e : React.ChangeEvent<HTMLInputElement>) => handleChange(e, "poliyName")}/>
-            <Select onChange={(e : React.ChangeEvent<HTMLInputElement>) => handleChange(e, "address")}>
-                {/*{usedAddresses.map((address) => {*/}
-                {/*    return <MenuItem value={address}>{address}</MenuItem>*/}
-                {/*})*/}
-                {/*}*/}
-            </Select>
-            <Button onClick={buildTransaction}>Build Transaction</Button>
-            <div>Transaction Hex: {transaction}</div>
-            <Button onClick={signTransaction}> Sign This Transaction</Button>
-        </div>
+        <>
+                <Grid container md={12}>
+                    <Grid item md={12}>
+            <MintNFTUserInput handleChange={handleChange} addresses={addresses}/>
+                    </Grid>
+            <Button onClick={signAndSubmit}>Submit this transaction</Button>
+            <div>Tx Hash: {txHash}</div>
+                </Grid>
+        </>
     )
 }
 

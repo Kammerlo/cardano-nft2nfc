@@ -1,9 +1,8 @@
 
-interface MintNFT {
+interface MintDTO {
     name: "",
     description: "",
     ipfsImageUrl: "",
     ipfsImageName: "",
     address: "",
-    policyName: ""
 }
