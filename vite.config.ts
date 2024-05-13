@@ -30,6 +30,7 @@ export default defineConfig({
       resolvers: [ElementPlusResolver()]
     })
   ],
+  server: { proxy: {"/api": "http://localhost:3000"} },
 
   resolve: {
     alias: {
