@@ -1,8 +1,8 @@
 import {BrowserRouter, Route, Routes} from "react-router-dom";
-import CreateNFT from "./pages/CreateNFT.tsx";
 import {CardanoWallet, useWallet} from "@meshsdk/react";
 import {BrowserWallet} from "@meshsdk/core";
 import {useState} from "react";
+import NFTStepper from "./pages/NFTStepper.tsx";
 
 function App() {
     const { name } = useWallet();
@@ -37,8 +37,8 @@ function App() {
             <div className="container mt-3">
             <BrowserRouter>
                 <Routes>
-                    <Route path="/" element={<CreateNFT wallet={wallet} />}/>
-                    <Route path="/nft" element={<CreateNFT wallet={wallet} />}/>
+                    <Route path="/" element={<NFTStepper wallet={wallet} />}/>
+                    <Route path="/nft" element={<NFTStepper wallet={wallet} />}/>
                     <Route path="/validator" /> // TODO add validator
                 </Routes>
             </BrowserRouter>

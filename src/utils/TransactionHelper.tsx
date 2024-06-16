@@ -7,7 +7,6 @@ export default class TransactionHelper {
     public static async buildTransaction(mint: Mint | undefined, wallet: BrowserWallet) {
         if (mint !== undefined && mint.recipient !== undefined) {
             const forgingScript = ForgeScript.withOneSignature(mint.recipient.toString());
-
             const tx = new Transaction({initiator: wallet}).mintAsset(
                 forgingScript,
                 mint,

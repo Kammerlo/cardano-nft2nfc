@@ -7,7 +7,7 @@ import MintNFTUserInput from "../components/MintNFTUserInput.tsx";
 import {CodeBlock} from "react-code-blocks";
 import "./../App.css";
 
-const CreateNFT = (props : ({wallet : BrowserWallet})) => {
+const CreateNFT = (props : ({wallet : BrowserWallet, setTxHash :  (value: React.SetStateAction<string>) => void})) => {
 
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const [transaction, setTransaction] = useState<string>("");
@@ -24,7 +24,6 @@ const CreateNFT = (props : ({wallet : BrowserWallet})) => {
                 setAddresses(response);
                 console.log(response);
             });
-
         }
     }, [props.wallet]);
 
@@ -41,14 +40,11 @@ const CreateNFT = (props : ({wallet : BrowserWallet})) => {
             label: '721',
             recipient: mintDTO.address
         } as Mint);
-        console.log(mint);
         buildTransaction();
     }, [mintDTO]);
 
     function buildTransaction() {
-        console.log(mint?.recipient)
         if(mint?.recipient !== undefined && mint.recipient !== "") {
-            console.log("Building transaction");
             TransactionHelper.buildTransaction(mint, props.wallet).then((response) => {
                 if(response != undefined) {
                     setTransaction(response);
@@ -60,13 +56,13 @@ const CreateNFT = (props : ({wallet : BrowserWallet})) => {
     function signTranscation() {
         TransactionHelper.signTransaction(transaction, props.wallet).then((response) => {
             setSignedTransaction(response);
-
         });
     }
 
     function submitTransaction() {
         TransactionHelper.submitTransaction(signedTransaction, props.wallet).then((response) => {
             setTxHash(response);
+            props.setTxHash(response); // TODO could be done better
         });
     }
 
@@ -79,14 +75,14 @@ const CreateNFT = (props : ({wallet : BrowserWallet})) => {
                 <Grid item xs={8} height={"initial"}>
                     <CodeBlock text={JSON.stringify(mint, null, 4)} language='json'></CodeBlock>
                     <h5>Transaction Bytes: </h5>
-                    <textarea rows={2} maxLength={100} placeholder={transaction} contentEditable={false} style={{width: "100%"}}>
-                    </textarea>
+                    <textarea rows={2} maxLength={100} placeholder={transaction} contentEditable={false} style={{width: "100%"}}/>
+                    <Button onClick={signTranscation}>Sign this transaction</Button>
+                    <div style={{overflow: "scroll", overflowY: "hidden", overflowX: "hidden"}}>Tx Hash: {signedTransaction}</div>
+                    <Button onClick={submitTransaction}>Submit this transaction</Button>
+                    <div style={{overflow: "scroll", overflowY: "hidden", overflowX: "hidden"}}>Tx Hash: {txHash}</div>
                 </Grid>
                 <Grid item xs={12}>
-                    <Button onClick={signTranscation}>Sign this transaction</Button>
-                    <div>Tx Hash: {signedTransaction}</div>
-                    <Button onClick={submitTransaction}>Submit this transaction</Button>
-                    <div>Tx Hash: {txHash}</div>
+
                 </Grid>
             </Grid>
         </>

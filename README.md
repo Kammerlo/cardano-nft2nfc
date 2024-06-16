@@ -1,30 +1,30 @@
-# React + TypeScript + Vite
+**Disclaimer** This project is currently still under development. I'm working on this in my spare time, so it will take some time to finish it. 
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+# Cardano NFT-to-NFC
+This project aims provide an easy to use webapp to write NFT to NFC Chips. 
+This way it will be possible to mark physical objects with these NFC chips to prove that it's yours. 
+Since you can scan the object it will link to an NFT which was minted into your wallet. 
 
-Currently, two official plugins are available:
+Normally I'm a java developer, but wanted to refresh my Typescript skills, and so I came up with this Idea.
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+## How to build
+This project is splitted into frontend and Backend. The frontend was build using Vue + React and the backend is NodeJs. 
+A backend is needed since some libraries can't run in the frontend e.g. the NFC Writer and Blockfrostlib.
 
-## Expanding the ESLint configuration
+To start the frontend:
+```npm run dev```
+To start the backend:
+- Copy `.env` File, rename to `.env.local` and fill it with your values 
+- ```npm run dev-node```
 
-If you are developing a production application, we recommend updating the configuration to enable type aware lint rules:
+# ToDos List
+This project is under development and still a lot of stuff todo to reach the first release. 
+I'm developing this in my spare time, so it can take some time until it's finished.
 
-- Configure the top-level `parserOptions` property like this:
-
-```js
-export default {
-  // other rules...
-  parserOptions: {
-    ecmaVersion: 'latest',
-    sourceType: 'module',
-    project: ['./tsconfig.json', './tsconfig.node.json'],
-    tsconfigRootDir: __dirname,
-  },
-}
-```
-
-- Replace `plugin:@typescript-eslint/recommended` to `plugin:@typescript-eslint/recommended-type-checked` or `plugin:@typescript-eslint/strict-type-checked`
-- Optionally add `plugin:@typescript-eslint/stylistic-type-checked`
-- Install [eslint-plugin-react](https://github.com/jsx-eslint/eslint-plugin-react) and add `plugin:react/recommended` & `plugin:react/jsx-runtime` to the `extends` list
+ToDos:
+- [x] Implement NFT minting
+- [ ] Implement NFC writing
+- [ ] Implement validty proof
+- [ ] Refactor code (since at some place I chose some cumbersome solutions to get it running, so I'm aware of that :) )
+- [ ] Deploy test instance
+- [ ] Documentation

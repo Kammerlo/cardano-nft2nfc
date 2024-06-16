@@ -9,20 +9,23 @@ const MintNFTUserInput = (props : {addresses : string[], setMintDTO :  React.Dis
 
     const [files, setFiles] = useState<(File)[]>([]);
     const { addresses, setMintDTO, mintDTO } = props;
-    const [ pinned, setPinned ] = useState<boolean>(true);
+    const [ pinned, setPinned ] = useState<boolean>(false);
+    const [ uploaded, setUploaded] = useState<boolean>(false);
     const [intervalFunc, setIntervalFunc] = useState<NodeJS.Timeout>();
 
     async function pinIPFS() {
 
         const formData = new FormData();
         formData.append("file", files[0]);
+        setPinned(false);
+        setUploaded(true);
         axios.post("http://localhost:3000/pin", formData).then((response) => {
-            setPinned(false);
+
             setMintDTO({...mintDTO, ipfsImageUrl: "ipfs://" + response.data})
             updateIPFSImageName(files[0].name);
             setIntervalFunc(
                 setInterval(() => {
-                    axios.get("http://localhost:3000/status/" + response.data).then((response) => {
+                    axios.get("http://localhost:3000/ipfsstatus/" + response.data).then((response) => {
                         console.log(response);
                         if(response.data.state === "pinned") {
                             setPinned(true);
@@ -55,10 +58,10 @@ const MintNFTUserInput = (props : {addresses : string[], setMintDTO :  React.Dis
                 <Box component={"section"}  display={"flex"}>
                     <DropzoneArea acceptedFiles={["image/jpeg", "image/png"]} filesLimit={1} onChange={(files) => setFiles(files)}/>
                 </Box>
-                {mintDTO.ipfsImageUrl === "" ?
-                <Button onClick={pinIPFS}>Pin Image</Button> :
+                {!uploaded ?
+                    <Button onClick={pinIPFS}>Pin Image</Button> :
                     pinned ?
-                        <CircularProgress/> : <CheckIcon/>
+                        <CheckIcon style={{alignSelf: "center"}}/> : <CircularProgress style={{alignSelf: "center"}}/>
                 }
                 <TextField label="IPFS Image Name" onChange={(e: React.ChangeEvent<HTMLInputElement>) => setMintDTO({...mintDTO, ipfsImageName: e.target.value})}/>
                 <TextField defaultValue={1} type="number" label="Asset Quantity" onChange={(e: React.ChangeEvent<HTMLInputElement>) => setMintDTO({...mintDTO, assetQuantity: e.target.value})}/>
