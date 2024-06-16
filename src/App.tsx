@@ -6,10 +6,24 @@ import NFTStepper from "./pages/NFTStepper.tsx";
 
 function App() {
     const { name } = useWallet();
+    const [network, setNetwork] = useState("");
     const [ wallet, setWallet ] = useState({} as BrowserWallet)
     async function walletConnected() {
         console.log("Wallet connected: " + name);
-        setWallet(await BrowserWallet.enable(name));
+        const browserWallet = await BrowserWallet.enable(name);
+        setWallet(browserWallet);
+        browserWallet.getNetworkId().then(value => {
+            switch (value) {
+                case 0:
+                    setNetwork("Testnet")
+                    break;
+                case 1:
+                    setNetwork("Mainnet")
+                    break;
+                default:
+                    setNetwork("Unknown")
+            }
+        });
     }
 
     return (
@@ -30,6 +44,7 @@ function App() {
                         </a>
                     </li>
                 </div>
+                <div className="ms-auto navbar-brand">{network ? "Current Network: " + network : ""}</div>
                 <div className="ms-auto">
                     < CardanoWallet onConnected={walletConnected}/>
                 </div>
