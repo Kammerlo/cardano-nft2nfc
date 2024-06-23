@@ -1,5 +1,5 @@
 import {useEffect} from 'react';
-import {Button, Grid} from "@mui/material";
+import {Alert, Button, Grid, Snackbar} from "@mui/material";
 import { useState } from "react";
 import {AssetMetadata, BrowserWallet, Mint} from "@meshsdk/core";
 import TransactionHelper from "../utils/TransactionHelper.tsx";
@@ -7,25 +7,26 @@ import MintNFTUserInput from "../components/MintNFTUserInput.tsx";
 import {CodeBlock} from "react-code-blocks";
 import "./../App.css";
 
-const CreateNFT = (props : ({wallet : BrowserWallet, setTxHash :  (value: React.SetStateAction<string>) => void})) => {
+const CreateNFT = (props : ({wallet : BrowserWallet, setTxHash :  (value: React.SetStateAction<string>) => void, txHash : string, setAssetName : (value: React.SetStateAction<string>) => void})) => {
 
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    const {wallet, setTxHash, txHash, setAssetName} = props;
     const [transaction, setTransaction] = useState<string>("");
     const [signedTransaction, setSignedTransaction] = useState("");
     const [mintDTO, setMintDTO] = useState<MintDTO>({name: "", address: "", ipfsImageName: "", ipfsImageUrl: "", assetQuantity: "1"} as MintDTO);
     const [addresses, setAddresses] = useState<string[]>([]);
-    const [txHash, setTxHash] = useState("");
-
     const [mint, setMint] = useState<Mint>();
+    const [isTxSnackBarOpen, setIsTxSnackBarOpen] = useState(false);
+    const [isErrorSnackBarOpen, setIsErrorSnackBarOpen] = useState(false);
+    const [errorText, setErrorText] = useState("");
 
     useEffect(() => {
-        if (props.wallet.getUsedAddresses != undefined) {
-            props.wallet.getUsedAddresses().then((response) => {
+        if (wallet.getUsedAddresses != undefined) {
+            wallet.getUsedAddresses().then((response) => {
                 setAddresses(response);
                 console.log(response);
             });
         }
-    }, [props.wallet]);
+    }, [wallet]);
 
     useEffect(() => {
         const assetMetadata: AssetMetadata = {
@@ -45,7 +46,7 @@ const CreateNFT = (props : ({wallet : BrowserWallet, setTxHash :  (value: React.
 
     function buildTransaction() {
         if(mint?.recipient !== undefined && mint.recipient !== "") {
-            TransactionHelper.buildTransaction(mint, props.wallet).then((response) => {
+            TransactionHelper.buildTransaction(mint, wallet).then((response) => {
                 if(response != undefined) {
                     setTransaction(response);
                 }
@@ -53,16 +54,20 @@ const CreateNFT = (props : ({wallet : BrowserWallet, setTxHash :  (value: React.
         }
     }
 
-    function signTranscation() {
-        TransactionHelper.signTransaction(transaction, props.wallet).then((response) => {
-            setSignedTransaction(response);
-        });
+    function signTransaction() {
+            TransactionHelper.signTransaction(transaction, wallet).then((response) => {
+                setSignedTransaction(response);
+            }).catch(() => {
+                setIsErrorSnackBarOpen(true);
+                setErrorText("Error signing transaction. Wallet not connected.");
+            }) ;
     }
 
     function submitTransaction() {
-        TransactionHelper.submitTransaction(signedTransaction, props.wallet).then((response) => {
+        TransactionHelper.submitTransaction(signedTransaction, wallet).then((response) => {
             setTxHash(response);
-            props.setTxHash(response); // TODO could be done better
+            setIsTxSnackBarOpen(true);
+            setAssetName(mintDTO.name);
         });
     }
 
@@ -74,16 +79,47 @@ const CreateNFT = (props : ({wallet : BrowserWallet, setTxHash :  (value: React.
                 </Grid>
                 <Grid item xs={8} height={"initial"}>
                     <CodeBlock text={JSON.stringify(mint, null, 4)} language='json'></CodeBlock>
-                    <h5>Transaction Bytes: </h5>
-                    <textarea rows={2} maxLength={100} placeholder={transaction} contentEditable={false} style={{width: "100%"}}/>
-                    <Button onClick={signTranscation}>Sign this transaction</Button>
-                    <div style={{overflow: "scroll", overflowY: "hidden", overflowX: "hidden"}}>Tx Hash: {signedTransaction}</div>
-                    <Button onClick={submitTransaction}>Submit this transaction</Button>
-                    <div style={{overflow: "scroll", overflowY: "hidden", overflowX: "hidden"}}>Tx Hash: {txHash}</div>
-                </Grid>
-                <Grid item xs={12}>
+                    {signedTransaction ?
+                        <>
+                            <h5> Signed Transaction: </h5>
+                            <textarea rows={5} maxLength={100} placeholder={signedTransaction} contentEditable={false}
+                                      style={{width: "100%"}}/>
+                        </>
+                        :
+                        <>
+                            <h5>Raw Transaction Bytes: </h5>
+                            <textarea rows={5} maxLength={100} placeholder={transaction} contentEditable={false}
+                                               style={{width: "100%"}}/>
+                        </>
+                }
 
-                </Grid>
+
+                    {signedTransaction ?
+                    <Button onClick={submitTransaction}>Submit this transaction</Button>
+                        : <Button onClick={signTransaction}>Sign this transaction</Button>
+                    }
+                        <div style={{overflow: "scroll", overflowY: "hidden", overflowX: "hidden"}}>Tx Hash: {txHash}</div>
+                    </Grid>
+                <Snackbar open={isTxSnackBarOpen} autoHideDuration={6000} onClose={() => setIsTxSnackBarOpen(false)}>
+                    <Alert
+                        onClose={() => setIsTxSnackBarOpen(false)}
+                        severity="success"
+                        variant="filled"
+                        sx={{ width: '100%' }}
+                    >
+                        Transaction successfully submitted. Tx Hash: {txHash}
+                    </Alert>
+                </Snackbar>
+                <Snackbar open={isErrorSnackBarOpen} autoHideDuration={6000} onClose={() => setIsErrorSnackBarOpen(false)}>
+                    <Alert
+                        onClose={() => setIsErrorSnackBarOpen(false)}
+                        severity="error"
+                        variant="filled"
+                        sx={{ width: '100%' }}
+                    >
+                        {errorText}
+                    </Alert>
+                </Snackbar>
             </Grid>
         </>
     )

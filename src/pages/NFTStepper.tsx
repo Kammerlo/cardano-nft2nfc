@@ -17,6 +17,7 @@ export default function NFTStepper(props : ({wallet : BrowserWallet})) {
     const [activeStep, setActiveStep] = React.useState(0);
     const [skipped, setSkipped] = React.useState(new Set<number>());
     const [txHash, setTxHash] = React.useState("" as string);
+    const [assetName, setAssetName] = React.useState("" as string);
 
     const isStepOptional = (step: number) => {
         return optionalSteps.includes(step);
@@ -84,8 +85,8 @@ export default function NFTStepper(props : ({wallet : BrowserWallet})) {
             ) : (
                 <>
                     {
-                        activeStep === 0 ? <CreateNFT wallet={props.wallet} setTxHash={setTxHash}/> :
-                        activeStep === 1 ? <FlashNFT wallet={props.wallet} txHash={txHash}/> : <></>
+                        activeStep === 0 ? <CreateNFT wallet={props.wallet} setTxHash={setTxHash} txHash={txHash} setAssetName={setAssetName}/> :
+                        activeStep === 1 ? <FlashNFT wallet={props.wallet} txHash={txHash} assetName={assetName}/> : <></>
                     }
                     <Box sx={{ display: 'flex', flexDirection: 'row', pt: 2 }}>
                         <Button

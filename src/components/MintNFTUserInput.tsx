@@ -11,29 +11,32 @@ const MintNFTUserInput = (props : {addresses : string[], setMintDTO :  React.Dis
     const { addresses, setMintDTO, mintDTO } = props;
     const [ pinned, setPinned ] = useState<boolean>(false);
     const [ uploaded, setUploaded] = useState<boolean>(false);
-    const [intervalFunc, setIntervalFunc] = useState<NodeJS.Timeout>();
+    // const [intervalFunc, setIntervalFunc] = useState<NodeJS.Timeout>();
 
-    async function pinIPFS() {
+    function pinIPFS() {
 
         const formData = new FormData();
         formData.append("file", files[0]);
         setPinned(false);
         setUploaded(true);
         axios.post("http://localhost:3000/pin", formData).then((response) => {
-
-            setMintDTO({...mintDTO, ipfsImageUrl: "ipfs://" + response.data})
+            console.log(response.data)
+            mintDTO.ipfsImageUrl = "ipfs://" + response.data
+            setMintDTO(mintDTO)
             updateIPFSImageName(files[0].name);
-            setIntervalFunc(
-                setInterval(() => {
-                    axios.get("http://localhost:3000/ipfsstatus/" + response.data).then((response) => {
-                        console.log(response);
-                        if(response.data.state === "pinned") {
-                            setPinned(true);
-                            clearInterval(intervalFunc);
-                        }
-                    });
-                }, 5000)
-            );
+            setPinned(true)
+            // TODO need to fix ipfs status
+            // setIntervalFunc(
+            //     setInterval(() => {
+            //         axios.get("http://localhost:3000/ipfsstatus/" + response.data).then((response) => {
+            //             console.log(response);
+            //             if(response.data.state === "pinned") {
+            //                 setPinned(true);
+            //                 clearInterval(intervalFunc);
+            //             }
+            //         });
+            //     }, 5000)
+            // );
         });
 
     }
