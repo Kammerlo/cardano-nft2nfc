@@ -9,7 +9,7 @@ import {BrowserWallet} from "@meshsdk/core";
 import CreateNFT from "./CreateNFT.tsx";
 import FlashNFT from "./FlashNFT.tsx";
 
-export default function NFTStepper(props : ({wallet : BrowserWallet})) {
+export default function NFTStepper(props : ({wallet : BrowserWallet | undefined})) {
 
     const steps = ['Create NFT', 'Flash NFT'];
     const optionalSteps = [0];

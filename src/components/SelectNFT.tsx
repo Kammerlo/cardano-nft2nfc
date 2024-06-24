@@ -32,6 +32,7 @@ export default function SelectNFT(props: {selectedAsset : AssetExtended, setSele
 }
 
     return (
+        // TODO Check if Table view is better. Like the one in NFTChecker
         <Accordion>
             <AccordionSummary
                 expandIcon={<ExpandMoreIcon />}

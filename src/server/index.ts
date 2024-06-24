@@ -47,9 +47,6 @@ async function sleep(ms: number): Promise<void> {
 
 
 app.use(cors())
-// app.listen(PORT, () => {
-//   console.log('Server is running on http://localhost:3000');
-// });
 
 // Create a Multer instance with a destination folder for file uploads
 const upload = multer({ dest: 'uploads/' });
@@ -75,6 +72,13 @@ app.get('/ipfsstatus/:hash', async function(req, res) {
     res.send("pinned")
 
 });
+
+app.get('/nft/info/:fingerprint', async function(req, res) {
+    console.log(req.params.fingerprint)
+    blockFrostAPI.assetsById(req.params.fingerprint).then((response) => {
+        res.send(response)
+    })
+})
 
 
 server.listen(PORT, () => {

@@ -3,11 +3,12 @@ import {CardanoWallet, useWallet} from "@meshsdk/react";
 import {BrowserWallet} from "@meshsdk/core";
 import {useState} from "react";
 import NFTStepper from "./pages/NFTStepper.tsx";
+import NFTChecker from "./pages/NFTChecker.tsx";
 
 function App() {
     const { name } = useWallet();
     const [network, setNetwork] = useState("");
-    const [ wallet, setWallet ] = useState({} as BrowserWallet)
+    const [ wallet, setWallet ] = useState(undefined as BrowserWallet | undefined);
     async function walletConnected() {
         console.log("Wallet connected: " + name);
         const browserWallet = await BrowserWallet.enable(name);
@@ -39,8 +40,8 @@ function App() {
                         </a>
                     </li>
                     <li className="nav-item">
-                        <a href={"/validator"} className="nav-link">
-                            Validator
+                        <a href={"/check"} className="nav-link">
+                            NFT Checker
                         </a>
                     </li>
                 </div>
@@ -54,7 +55,8 @@ function App() {
                 <Routes>
                     <Route path="/" element={<NFTStepper wallet={wallet} />}/>
                     <Route path="/nft" element={<NFTStepper wallet={wallet} />}/>
-                    <Route path="/validator" /> // TODO add validator
+                    <Route path="/check" element={<NFTChecker wallet={wallet} />}/>
+                    <Route path="/check/:unit" element={<NFTChecker wallet={wallet}/>}/>
                 </Routes>
             </BrowserRouter>
             </div>

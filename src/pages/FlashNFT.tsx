@@ -5,14 +5,14 @@ import Typography from "@mui/material/Typography";
 import SelectNFT from "../components/SelectNFT.tsx";
 import ManualFlash from "../components/ManualFlash.tsx";
 
-export default function FlashNFT(props : ({wallet : BrowserWallet, txHash : string, assetName : string})) {
+export default function FlashNFT(props : ({wallet : BrowserWallet | undefined, txHash : string, assetName : string})) {
 
     const { wallet, assetName } = props;
     const [assets, setAssets] = useState<AssetExtended[]>([]);
     const [selectedAsset, setSelectedAsset] = useState<AssetExtended>({} as AssetExtended);
     const [checkUrl, setCheckUrl] = useState<string>("");
     useEffect(() => {
-        try {
+        if(wallet) {
             wallet.getAssets().then((response) => {
 
                     console.log(response);
@@ -22,15 +22,12 @@ export default function FlashNFT(props : ({wallet : BrowserWallet, txHash : stri
                         setSelectedAsset(selectedAsset as AssetExtended);
                     }
                 });
-
-        } catch (e) {
-            console.log("Wallet not connected");
         }
     }, [wallet]);
 
     useEffect(() => {
         console.log(window.location.origin);
-        setCheckUrl(window.location.origin + "/check/" + selectedAsset.fingerprint);
+        setCheckUrl(window.location.origin + "/check/" + selectedAsset.unit);
     }, [selectedAsset]);
 
 

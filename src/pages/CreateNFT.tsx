@@ -7,7 +7,7 @@ import MintNFTUserInput from "../components/MintNFTUserInput.tsx";
 import {CodeBlock} from "react-code-blocks";
 import "./../App.css";
 
-const CreateNFT = (props : ({wallet : BrowserWallet, setTxHash :  (value: React.SetStateAction<string>) => void, txHash : string, setAssetName : (value: React.SetStateAction<string>) => void})) => {
+const CreateNFT = (props : ({wallet : BrowserWallet | undefined, setTxHash :  (value: React.SetStateAction<string>) => void, txHash : string, setAssetName : (value: React.SetStateAction<string>) => void})) => {
 
     const {wallet, setTxHash, txHash, setAssetName} = props;
     const [transaction, setTransaction] = useState<string>("");
@@ -20,7 +20,7 @@ const CreateNFT = (props : ({wallet : BrowserWallet, setTxHash :  (value: React.
     const [errorText, setErrorText] = useState("");
 
     useEffect(() => {
-        if (wallet.getUsedAddresses != undefined) {
+        if (wallet) {
             wallet.getUsedAddresses().then((response) => {
                 setAddresses(response);
                 console.log(response);
@@ -45,7 +45,7 @@ const CreateNFT = (props : ({wallet : BrowserWallet, setTxHash :  (value: React.
     }, [mintDTO]);
 
     function buildTransaction() {
-        if(mint?.recipient !== undefined && mint.recipient !== "") {
+        if(mint?.recipient !== undefined && mint.recipient !== "" && wallet) {
             TransactionHelper.buildTransaction(mint, wallet).then((response) => {
                 if(response != undefined) {
                     setTransaction(response);
@@ -55,20 +55,24 @@ const CreateNFT = (props : ({wallet : BrowserWallet, setTxHash :  (value: React.
     }
 
     function signTransaction() {
+        if(wallet) {
             TransactionHelper.signTransaction(transaction, wallet).then((response) => {
                 setSignedTransaction(response);
             }).catch(() => {
                 setIsErrorSnackBarOpen(true);
                 setErrorText("Error signing transaction. Wallet not connected.");
             }) ;
+        }
     }
 
     function submitTransaction() {
-        TransactionHelper.submitTransaction(signedTransaction, wallet).then((response) => {
-            setTxHash(response);
-            setIsTxSnackBarOpen(true);
-            setAssetName(mintDTO.name);
-        });
+        if(wallet) {
+            TransactionHelper.submitTransaction(signedTransaction, wallet).then((response) => {
+                setTxHash(response);
+                setIsTxSnackBarOpen(true);
+                setAssetName(mintDTO.name);
+            });
+        }
     }
 
     return (
