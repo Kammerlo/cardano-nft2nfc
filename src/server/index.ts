@@ -1,4 +1,3 @@
-import './utils/blockfrostHelper.ts';
 import express from 'express';
 import multer from 'multer';
 import cors from 'cors';
@@ -7,6 +6,9 @@ import * as http from "http";
 import { WebSocketServer } from "ws";
 import * as fs from "fs";
 import * as IPFS from 'ipfs-core';
+import {configDotenv} from "dotenv";
+import ViteExpress from "vite-express";
+configDotenv();
 
 const apiKey = process.env.BLOCKFROST_API_KEY == undefined ? "" : process.env.BLOCKFROST_API_KEY;
 
@@ -14,36 +16,6 @@ const blockFrostAPI = new BlockFrostAPI({projectId: apiKey})
 const PORT = process.env.PORT || 3000;
 
 const app = express();
-const server = http.createServer(app);
-const wss = new WebSocketServer({server})
-const ipfs = await IPFS.create()
-wss.on("connection", (ws: WebSocket) => {
-    console.log("Connected")
-    ws.onmessage = async (message) => {
-        console.log("Got Data", message.data)
-        let i = 0;
-        while(i < 100) {
-            try {
-                blockFrostAPI.txs(message.data).then(value => {
-                    console.log(value)
-                })
-                console.log("Tx is live")
-            } catch (e) {
-                i++
-                console.log("Transaction not yet online")
-
-            }
-            await sleep(10000)
-        }
-
-
-    }
-});
-
-async function sleep(ms: number): Promise<void> {
-    return new Promise(
-        (resolve) => setTimeout(resolve, ms));
-}
 
 
 app.use(cors())
@@ -51,6 +23,7 @@ app.use(cors())
 // Create a Multer instance with a destination folder for file uploads
 const upload = multer({ dest: 'uploads/' });
 app.post('/pin', upload.single('file'), async function(req, res) {
+    const ipfs = await IPFS.create()
     if(req.file == undefined) {
         res.send("No file uploaded");
         return;
@@ -75,12 +48,16 @@ app.get('/ipfsstatus/:hash', async function(req, res) {
 
 app.get('/nft/info/:fingerprint', async function(req, res) {
     console.log(req.params.fingerprint)
+    try {
     blockFrostAPI.assetsById(req.params.fingerprint).then((response) => {
         res.send(response)
     })
+    } catch (e) {
+        console.log(e);
+    }
 })
 
 
-server.listen(PORT, () => {
+ViteExpress.listen(app, 3000, () => {
     console.log(`Server Listen At ${PORT}`);
 });
