@@ -59,7 +59,7 @@ const MintNFTUserInput = (props : {addresses : string[], setMintDTO :  React.Dis
                 </Select>
                 <TextField label="Name" value={mintDTO.name} onChange={(e : React.ChangeEvent<HTMLInputElement>) => setMintDTO({...mintDTO, name: e.target.value})}/>
                 <Box component={"section"}  display={"flex"}>
-                    <DropzoneArea acceptedFiles={["image/jpeg", "image/png"]} filesLimit={1} onChange={(files) => setFiles(files)}/>
+                    <DropzoneArea acceptedFiles={["image/jpeg", "image/png"]} fileObjects={files} filesLimit={1} onChange={(files) => setFiles(files)}/>
                 </Box>
                 {!uploaded ?
                     <Button onClick={pinIPFS}>Pin Image</Button> :

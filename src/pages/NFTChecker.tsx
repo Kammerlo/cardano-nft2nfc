@@ -21,6 +21,7 @@ export default function NFTChecker (props: {wallet : BrowserWallet | undefined})
     const {unit} = useParams();
     const [asset, setAsset] = useState({} as components['schemas']['asset']);
     const [ containedInWallet, setContainedInWallet ] = useState(false);
+    const [ ipfsImageUrl, setIpfsImageUrl ] = useState("");
     // const {nft, setNft} = useState("");
 
     useEffect(() => {
@@ -46,7 +47,6 @@ export default function NFTChecker (props: {wallet : BrowserWallet | undefined})
     function containsWalletAsset() {
         if(wallet && unit) {
             wallet.getAssets().then((response) => {
-                console.log(response);
                 setContainedInWallet(response.find((asset) => asset.unit === unit) !== undefined);
             });
         }
@@ -56,6 +56,9 @@ export default function NFTChecker (props: {wallet : BrowserWallet | undefined})
         axios.get("http://localhost:3000/nft/info/" + nftUnit).then((response) => {
             setAsset(response.data);
             containsWalletAsset();
+            if(response.data.onchain_metadata.image) {
+                setIpfsImageUrl(response.data.onchain_metadata.image.replace("ipfs://", "https://ipfs.io/ipfs/"));
+            }
         });
     }
 
@@ -89,7 +92,7 @@ export default function NFTChecker (props: {wallet : BrowserWallet | undefined})
                                 <TableCell>{asset.policy_id}</TableCell>
                                 <TableCell>{asset.initial_mint_tx_hash}</TableCell>
                                 {/*TODO need to check this error*/}
-                                <TableCell><img src={asset.onchain_metadata.image.replace("ipfs://", "https://ipfs.io/ipfs/")} alt={"NFT Image"}/></TableCell>
+                                <TableCell><img src={ipfsImageUrl} alt={"NFT Image"}/></TableCell>
                             </TableRow>
                         </TableBody>
                     </Table>
