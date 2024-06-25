@@ -35,7 +35,7 @@ To deploy the application to firebase you need to run the following commands:
 ```shell
 npm install -g firebase-tools # to install the firebase tools
 firebase login # to login to your firebase account
-firebase init # to initialize the project choose hosting and select the dist folder
+firebase init # to initialize the project choose hosting and functions then select the dist folder
 firebase deploy # to deploy the project
 ```
 
