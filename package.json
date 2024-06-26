@@ -10,8 +10,11 @@
   },
   "dependencies": {
     "@blockfrost/blockfrost-js": "^5.5.0",
+    "@emotion/react": "^11.11.4",
     "@emotion/styled": "^11.11.5",
+    "@meshsdk/core": "^1.5.25",
     "@meshsdk/react": "^1.1.10-beta.4",
+    "@mui/icons-material": "^5.15.20",
     "@mui/material": "^5.15.15",
     "axios": "^1.6.8",
     "axios-curlirize": "^2.0.0",
