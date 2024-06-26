@@ -2,8 +2,8 @@ import {BrowserRouter, Route, Routes} from "react-router-dom";
 import {CardanoWallet, useWallet} from "@meshsdk/react";
 import {BrowserWallet} from "@meshsdk/core";
 import {useState} from "react";
-import NFTStepper from "./pages/NFTStepper.tsx";
-import NFTChecker from "./pages/NFTChecker.tsx";
+import NFTStepper from "./pages/NFTStepper";
+import NFTChecker from "./pages/NFTChecker";
 
 function App() {
     const { name } = useWallet();

@@ -2,8 +2,6 @@ import express from 'express';
 import multer from 'multer';
 import cors from 'cors';
 import { BlockFrostAPI } from "@blockfrost/blockfrost-js";
-import * as http from "http";
-import { WebSocketServer } from "ws";
 import * as fs from "fs";
 import * as IPFS from 'ipfs-core';
 import {configDotenv} from "dotenv";

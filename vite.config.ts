@@ -10,6 +10,7 @@ import { fileURLToPath, URL } from 'node:url'
 import { ElementPlusResolver } from 'unplugin-vue-components/resolvers'
 import { NodeGlobalsPolyfillPlugin } from '@esbuild-plugins/node-globals-polyfill'
 import { nodePolyfills } from 'vite-plugin-node-polyfills'
+import * as path from "node:path";
 
 // https://vitejs.dev/config/
 export default defineConfig({
@@ -36,7 +37,7 @@ export default defineConfig({
 
   resolve: {
     alias: {
-      '@': fileURLToPath(new URL('./src', import.meta.url))
+      '@': path.resolve(__dirname, './src')
     }
   },
 
