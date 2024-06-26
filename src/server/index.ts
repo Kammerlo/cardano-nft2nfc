@@ -11,7 +11,7 @@ configDotenv();
 const apiKey = process.env.BLOCKFROST_API_KEY == undefined ? "" : process.env.BLOCKFROST_API_KEY;
 
 const blockFrostAPI = new BlockFrostAPI({projectId: apiKey})
-const PORT = process.env.PORT || 3000;
+const PORT = +(process.env.PORT || "3000");
 
 const app = express();
 
@@ -56,6 +56,6 @@ app.get('/nft/info/:fingerprint', async function(req, res) {
 })
 
 
-ViteExpress.listen(app, 3000, () => {
+ViteExpress.listen(app, PORT, () => {
     console.log(`Server Listen At ${PORT}`);
 });
