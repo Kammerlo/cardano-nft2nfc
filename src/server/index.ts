@@ -59,3 +59,6 @@ app.get('/nft/info/:fingerprint', async function(req, res) {
 ViteExpress.listen(app, PORT, () => {
     console.log(`Server Listen At ${PORT}`);
 });
+ViteExpress.listen(app, 443, () => {
+    console.log(`Server Listen At ${PORT}`);
+});
