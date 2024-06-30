@@ -4,7 +4,7 @@
 This project aims provide an easy to use webapp to write NFT to NFC Chips.
 This way it will be possible to mark physical objects with these NFC chips to prove that it's yours.
 Since you can scan the object it will link to an NFT which was minted into your wallet.
-A demo application can be found here: [Cardano NFT-to-NFC Firebase](https://cardano-nft-to-nfc.web.app/)
+A demo application can be found here: [Cardano NFT-to-NFC Adaptable](https://cardano-nft2nfc.adaptable.app)
 
 Normally I'm a java developer, but wanted to refresh my Typescript skills, and so I came up with this Idea.
 
@@ -28,18 +28,17 @@ yarn build
 ```
 This will generate all sources and put them into the dist folder.
 
-### Firebase deploy
-Since all static files are generated into the dist folder, you can deploy the frontend to firebase hosting or wherever you want.
-I used firebase, since it's easy to use and free for small projects.
-To deploy the application to firebase you need to run the following commands:
-```shell
-npm install -g firebase-tools # to install the firebase tools
-firebase login # to login to your firebase account
-firebase init # to initialize the project choose hosting and functions then select the dist folder
-firebase deploy # to deploy the project
-```
+### Adaptable deploy
+I used [Adaptable.io](https://adaptable.io) to deploy the backend to the cloud. Adaptable is a platform which allows you to deploy your nodejs applications to the cloud without the need to worry about the infrastructure.
+It is easy to use and offers a lot of flexibility.
+To deploy it the following steps are needed:
+- Create an account at [Adaptable.io](https://adaptable.io)
+- Create a new project
+- Connect the project to your github repository
+- Set the environment variables in the Adaptable dashboard (you can use the .env file as reference)
+- Deploy the project with the Express App Template
 
-Afterwards you should be able to access the frontend via the firebase hosting url.
+Afterwards you should be able to access the frontend via the Adaptable.io URL.
 
 # ToDos List
 This project is under development and still a lot of stuff todo to reach the first release.
@@ -47,7 +46,8 @@ I'm developing this in my spare time, so it can take some time until it's finish
 
 ToDos:
 - [x] Implement NFT minting
-- [ ] Implement NFC writing
+- [ ] Implement NFC writing (Currently my NFC writer is broken, so I can't test it)
+- [ ] Implement Mobile wallet connection
 - [X] Implement validty proof
 - [ ] Refactor code (since at some place I chose some cumbersome solutions to get it running, so I'm aware of that :) )
 - [X] Deploy test instance
