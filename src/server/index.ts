@@ -5,7 +5,6 @@ import { BlockFrostAPI } from "@blockfrost/blockfrost-js";
 import * as fs from "fs";
 import * as IPFS from 'ipfs-core';
 import {configDotenv} from "dotenv";
-import ViteExpress from "vite-express";
 import path from 'path';
 import * as http from "http";
 configDotenv();
@@ -19,7 +18,7 @@ const PORT = +(process.env.PORT || "3000");
 
 const app = express();
 
-
+console.log("test")
 app.use(cors())
 app.use(express.static(path.join(__dirname, '../../dist')));
 app.use(['/check*', '/nft*'], express.static(path.join(__dirname, '../../dist/index.html')));
@@ -50,7 +49,7 @@ app.get('/ipfsstatus/:hash', async function(req, res) {
 
 });
 
-app.get('/nft/info/:fingerprint', async function(req, res) {
+app.get('/asset/info/:fingerprint', async function(req, res) {
     console.log(req.params.fingerprint)
     try {
     blockFrostAPI.assetsById(req.params.fingerprint).then((response) => {
@@ -63,5 +62,5 @@ app.get('/nft/info/:fingerprint', async function(req, res) {
 
 const server = http.createServer(app);
 server.listen(PORT, () => {
-    console.log(`Server Listen At ${PORT} aaaa`);
+    console.log(`Server Listen At ${PORT}`);
 });

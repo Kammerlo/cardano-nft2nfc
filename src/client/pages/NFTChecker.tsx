@@ -53,8 +53,9 @@ export default function NFTChecker (props: {wallet : BrowserWallet | undefined})
     }
 
     function fetchNFT(nftUnit : string) {
-        axios.get(window.location.origin + "/nft/info/" + nftUnit).then((response) => {
+        axios.get(window.location.origin + "/asset/info/" + nftUnit).then((response) => {
             setAsset(response.data);
+            console.log(response.data);
             containsWalletAsset();
             if(response.data.onchain_metadata.image) {
                 setIpfsImageUrl(response.data.onchain_metadata.image.replace("ipfs://", "https://ipfs.io/ipfs/"));
@@ -74,43 +75,44 @@ export default function NFTChecker (props: {wallet : BrowserWallet | undefined})
                     <h6>Enter NFT Fingerprint to check <TextField label="NFT Identifier" variant="outlined"/></h6>
                 </div>
             }
-            {/* TODO extract to component */}
-            {asset.asset_name ?
-                <TableContainer component={Paper}>
-                    <Table>
-                        <TableHead>
-                            <TableRow>
-                                <TableCell>Asset Name</TableCell>
-                                <TableCell>PolicyID</TableCell>
-                                <TableCell>Mint Tx</TableCell>
-                                <TableCell>Image</TableCell>
-                            </TableRow>
-                        </TableHead>
-                        <TableBody>
-                            <TableRow>
-                                <TableCell>{hexToString(asset.asset_name)}</TableCell>
-                                <TableCell>{asset.policy_id}</TableCell>
-                                <TableCell>{asset.initial_mint_tx_hash}</TableCell>
-                                {/*TODO need to check this error*/}
-                                <TableCell><img src={ipfsImageUrl} alt={"NFT Image"}/></TableCell>
-                            </TableRow>
-                        </TableBody>
-                    </Table>
-                </TableContainer>
-                : "No asset available."
-            }
             {wallet ?
                 containedInWallet?
-                        <h5>
-                            <CheckCircleOutlineIcon style={{color : 'green'}}/> You own this Asset!
-                        </h5>
+                    <h5>
+                        <CheckCircleOutlineIcon style={{color : 'green'}}/> You own this Asset!
+                    </h5>
                     :
-                        <h5>
-                            <CancelIcon style={{color : 'red'}}/> Asset is not contained in your wallet
-                        </h5>
+                    <h5>
+                        <CancelIcon style={{color : 'red'}}/> Asset is not contained in your wallet
+                    </h5>
                 :
-                <div>Connect your wallet to check this NFT</div>}
-
+                <div>Connect your wallet to check this NFT</div>
+            }
+            {/* TODO extract to component */}
+            {asset.asset_name ?
+                <>
+                    <img src={ipfsImageUrl} style={{maxWidth: '100%'}} alt={"NFT Image"}/>
+                    <TableContainer component={Paper}>
+                        <Table>
+                            <TableHead>
+                                <TableRow>
+                                    <TableCell>Asset Name</TableCell>
+                                    <TableCell>PolicyID</TableCell>
+                                    <TableCell>Mint Tx</TableCell>
+                                    <TableCell>Image</TableCell>
+                                </TableRow>
+                            </TableHead>
+                            <TableBody>
+                                <TableRow>
+                                    <TableCell>{hexToString(asset.asset_name)}</TableCell>
+                                    <TableCell>{asset.policy_id}</TableCell>
+                                    <TableCell>{asset.initial_mint_tx_hash}</TableCell>
+                                </TableRow>
+                            </TableBody>
+                        </Table>
+                    </TableContainer>
+                </>
+                : "No asset available."
+            }
         </>
     )
 }

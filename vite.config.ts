@@ -6,7 +6,6 @@ import Components from 'unplugin-vue-components/vite'
 import topLevelAwait from 'vite-plugin-top-level-await'
 
 import { defineConfig } from 'vite'
-import { fileURLToPath, URL } from 'node:url'
 import { ElementPlusResolver } from 'unplugin-vue-components/resolvers'
 import { NodeGlobalsPolyfillPlugin } from '@esbuild-plugins/node-globals-polyfill'
 import { nodePolyfills } from 'vite-plugin-node-polyfills'
@@ -14,6 +13,7 @@ import * as path from "node:path";
 
 // https://vitejs.dev/config/
 export default defineConfig({
+
   plugins: [
     vue(),
     wasm(),
