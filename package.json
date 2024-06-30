@@ -4,7 +4,7 @@
   "version": "0.0.0",
   "type": "module",
   "scripts": {
-    "dev": "nodemon -w src/server -x tsx src/server/index.ts",
+    "dev": "nodemon --watch src/**/*.ts -L -x tsx src/server/index.ts",
     "start": "NODE_ENV=production tsx src/server/index.ts",
     "build": "vite build"
   },
@@ -60,6 +60,8 @@
     "eslint-plugin-react-hooks": "^4.6.0",
     "eslint-plugin-react-refresh": "^0.4.6",
     "nodemon": "^3.1.4",
+    "ts-node": "^10.9.2",
+    "ts-node-dev": "^2.0.0",
     "typescript": "^5.5.2",
     "unplugin-auto-import": "^0.15.2",
     "unplugin-element-plus": "^0.7.0",
