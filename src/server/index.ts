@@ -22,7 +22,7 @@ const app = express();
 
 app.use(cors())
 app.use(express.static(path.join(__dirname, '../../dist')));
-
+app.use(['/check*', '/nft*'], express.static(path.join(__dirname, '../../dist/index.html')));
 
 // Create a Multer instance with a destination folder for file uploads
 const upload = multer({ dest: 'uploads/' });
@@ -61,16 +61,7 @@ app.get('/nft/info/:fingerprint', async function(req, res) {
     }
 })
 
-// app.get('*', function (req, res) {
-//     console.log(__dirname  + '/index.html');
-//     res.sendFile(__dirname  + '/index.html');
-// });
-
 const server = http.createServer(app);
 server.listen(PORT, () => {
     console.log(`Server Listen At ${PORT} aaaa`);
 });
-//
-// ViteExpress.listen(app, PORT, () => {
-//     console.log(`Server Listen At ${PORT}`);
-// });
