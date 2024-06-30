@@ -9,6 +9,8 @@ import { defineConfig } from 'vite'
 import { fileURLToPath, URL } from 'node:url'
 import { ElementPlusResolver } from 'unplugin-vue-components/resolvers'
 import { NodeGlobalsPolyfillPlugin } from '@esbuild-plugins/node-globals-polyfill'
+import { nodePolyfills } from 'vite-plugin-node-polyfills'
+import * as path from "node:path";
 
 // https://vitejs.dev/config/
 export default defineConfig({
@@ -16,6 +18,7 @@ export default defineConfig({
     vue(),
     wasm(),
     topLevelAwait(),
+    nodePolyfills(),
 
     ElementPlus({
       // 引入的样式的类型，可以是css、sass、less等，
@@ -34,7 +37,7 @@ export default defineConfig({
 
   resolve: {
     alias: {
-      '@': fileURLToPath(new URL('./src', import.meta.url))
+      "@": path.resolve(__dirname, "./src")
     }
   },
 

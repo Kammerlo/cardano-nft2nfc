@@ -5,7 +5,7 @@ import {AssetMetadata, BrowserWallet, Mint} from "@meshsdk/core";
 import TransactionHelper from "../utils/TransactionHelper.tsx";
 import MintNFTUserInput from "../components/MintNFTUserInput.tsx";
 import {CodeBlock} from "react-code-blocks";
-import "./../App.css";
+import "../App.css";
 
 const CreateNFT = (props : ({wallet : BrowserWallet | undefined, setTxHash :  (value: React.SetStateAction<string>) => void, txHash : string, setAssetName : (value: React.SetStateAction<string>) => void})) => {
 
