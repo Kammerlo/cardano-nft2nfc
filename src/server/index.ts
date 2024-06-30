@@ -6,7 +6,11 @@ import * as fs from "fs";
 import * as IPFS from 'ipfs-core';
 import {configDotenv} from "dotenv";
 import ViteExpress from "vite-express";
+import path from 'path';
+import * as http from "http";
 configDotenv();
+
+const __dirname = path.dirname(new URL(import.meta.url).pathname);
 
 const apiKey = process.env.BLOCKFROST_API_KEY == undefined ? "" : process.env.BLOCKFROST_API_KEY;
 
@@ -17,6 +21,8 @@ const app = express();
 
 
 app.use(cors())
+app.use(express.static(path.join(__dirname, '../../dist')));
+
 
 // Create a Multer instance with a destination folder for file uploads
 const upload = multer({ dest: 'uploads/' });
@@ -55,10 +61,16 @@ app.get('/nft/info/:fingerprint', async function(req, res) {
     }
 })
 
+// app.get('*', function (req, res) {
+//     console.log(__dirname  + '/index.html');
+//     res.sendFile(__dirname  + '/index.html');
+// });
 
-ViteExpress.listen(app, PORT, () => {
-    console.log(`Server Listen At ${PORT}`);
+const server = http.createServer(app);
+server.listen(PORT, () => {
+    console.log(`Server Listen At ${PORT} aaaa`);
 });
-ViteExpress.listen(app, 443, () => {
-    console.log(`Server Listen At ${PORT}`);
-});
+//
+// ViteExpress.listen(app, PORT, () => {
+//     console.log(`Server Listen At ${PORT}`);
+// });
