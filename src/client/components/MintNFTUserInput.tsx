@@ -19,7 +19,7 @@ const MintNFTUserInput = (props : {addresses : string[], setMintDTO :  React.Dis
         formData.append("file", files[0]);
         setPinned(false);
         setUploaded(true);
-        axios.post("http://localhost:3000/pin", formData).then((response) => {
+        axios.post(window.location.origin + "/pin", formData).then((response) => {
             console.log(response.data)
             mintDTO.ipfsImageUrl = "ipfs://" + response.data
             setMintDTO(mintDTO)

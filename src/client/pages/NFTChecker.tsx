@@ -53,7 +53,7 @@ export default function NFTChecker (props: {wallet : BrowserWallet | undefined})
     }
 
     function fetchNFT(nftUnit : string) {
-        axios.get("http://localhost:3000/nft/info/" + nftUnit).then((response) => {
+        axios.get(window.location.origin + "/nft/info/" + nftUnit).then((response) => {
             setAsset(response.data);
             containsWalletAsset();
             if(response.data.onchain_metadata.image) {
